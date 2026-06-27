@@ -1,194 +1,162 @@
 # Save-The-Token
 
-Save-The-Token is a local-first MCP tool budget doctor for Codex, Claude Code, Cursor, and VS Code.
+[![Release Gate](https://github.com/ch040602/Save-The-Token/actions/workflows/release.yml/badge.svg)](https://github.com/ch040602/Save-The-Token/actions/workflows/release.yml)
+[![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-It starts with a narrow MVP:
+Stop paying context tokens for MCP tools and repo instructions your agent does not need.
 
-- discover Codex MCP configuration files
-- discover Claude Code `.mcp.json`, `~/.claude.json`, and Claude Desktop config files
-- discover VS Code and Cursor `mcp.json` files
-- lint MCP server entries
-- run stdio and Streamable HTTP MCP health probes
-- pass configured HTTP auth headers while redacting secrets from output
-- measure `tools/list` schema surface
-- emit compact tool schema digests with required inputs, risk markers, and token savings
-- emit grounded sufficiency reports with evidence ids
-- fingerprint config, instruction, and tool evidence for cache-aware reruns
-- plan a secondary context budget for config and instruction evidence without replacing Codex's instruction chain
-- route root-level instruction sections by task query while redacting secret-like lines
-- order compressed instruction evidence into a lead digest to reduce lost-in-the-middle risk
-- plan bounded follow-up retrieval steps from missing facts without treating insufficient drafts as final
-- evaluate token-reduction variants for required evidence recall and sufficiency regressions
-- generate strict benchmark JSON/Markdown reports that count savings only when context remains sufficient
-- recommend main-agent, progressive skill loading, and explicit subagent request paths without spawning subagents
-- prioritize relevant tools for a user task query
-- generate client-specific `enabled_tools` or `enabledTools` recommendations
+Save-The-Token is a local-first CLI for Codex, Claude Code, Cursor, VS Code, and MCP-heavy agent setups. It scans agent config, probes MCP tool surfaces, routes repository instructions by task, and emits smaller context plans with explicit sufficiency checks.
 
-The design follows an Agentic RAG-style diagnostic loop: plan required facts, retrieve only the needed config/runtime/tool evidence, judge whether the context is sufficient, then emit a grounded report or targeted next checks.
+## Measured Result
 
-## Release Positioning
+On the current 10-repo / 20-case benchmark across major repositories, Save-The-Token cuts successful sufficient contexts by **69.3% weighted average** and **63.5% median**.
 
-Safe current claim: Save-The-Token is a local-first token budget and MCP diagnostic CLI for agent coding environments. Its strict benchmark counts savings only when both the full context and the reduced context remain sufficient.
+| Result | Value |
+|---|---:|
+| Benchmark repos | 10 |
+| Repo-task cases | 20 |
+| Eligible full-sufficient cases | 5 |
+| Successful safe reductions | 5 |
+| Success on eligible cases | 100.0% |
+| Success across all cases | 25.0% |
+| Weighted saving on successful cases | 69.3% |
+| Median saving on successful cases | 63.5% |
+| Best observed saving | 88.3% |
 
-Current benchmark scope is narrow. On the current 10-repo, 20-case local benchmark, Save-The-Token finds safe reductions in 5/20 repo-task cases. Successful cases reduce instruction context by about 69% weighted average. Repos or tasks with insufficient full context are reported as coverage gaps, not token savings.
+Successful reductions:
 
-Do not describe the current release as "70% token savings across major repositories." That overstates the measured result.
+| repo | task | tokens | saving |
+|---|---|---:|---:|
+| `kubernetes/kubernetes` | `unit tests` | 345 -> 126 | 63.5% |
+| `langchain-ai/langchain` | `unit tests` | 7218 -> 3150 | 56.4% |
+| `langchain-ai/langchain` | `security review` | 7218 -> 846 | 88.3% |
+| `vercel/next.js` | `unit tests` | 5606 -> 2823 | 49.6% |
+| `vercel/next.js` | `security review` | 5606 -> 1034 | 81.6% |
 
-## Quick Start
+The benchmark is strict: savings count only when the full context and reduced context both remain sufficient. Cases where the full context is already insufficient are reported as coverage gaps, not wins. See [docs/benchmark.md](docs/benchmark.md).
 
-Install the CLI from a source checkout:
+## Why It Exists
 
-```powershell
+Modern coding agents load more than code:
+
+- MCP servers can expose large tool schemas.
+- `AGENTS.md`, `CLAUDE.md`, and guidance files can grow into broad instruction dumps.
+- Subagents and skill loading can multiply context cost when used automatically.
+
+Save-The-Token makes those costs visible, then recommends smaller task-specific context without silently removing the orchestrator's own instruction chain.
+
+## Highlights
+
+- Finds Codex, Claude Code, Claude Desktop, Cursor, and VS Code MCP config files.
+- Lints MCP server entries and redacts secret-like values in output.
+- Probes stdio and Streamable HTTP MCP servers for `initialize` and `tools/list`.
+- Estimates tool schema tokens and emits compact schema digests.
+- Routes `AGENTS.md` / `CLAUDE.md` sections by task query.
+- Compresses and orders instruction evidence to reduce irrelevant context.
+- Produces grounded sufficiency reports with claims, missing facts, and evidence ids.
+- Generates Codex `enabled_tools` and VS Code / Cursor `enabledTools` snippets.
+- Runs strict local benchmarks that separate safe savings from coverage gaps.
+
+## Install
+
+From GitHub:
+
+```bash
+python -m pip install git+https://github.com/ch040602/Save-The-Token.git
+```
+
+From a source checkout:
+
+```bash
+git clone https://github.com/ch040602/Save-The-Token.git
+cd Save-The-Token
 python -m pip install .
 ```
 
-Or install from a built wheel:
+For development:
 
-```powershell
-python -m pip install dist\save_the_token-0.1.0-py3-none-any.whl
-```
-
-For development and release-gate tooling:
-
-```powershell
+```bash
 python -m pip install -e ".[dev]"
 ```
 
-Run read-only discovery first:
+## Quick Start
 
-```powershell
+Start with read-only discovery:
+
+```bash
 save-the-token scan --root .
 ```
 
-When running directly from a source checkout without installing, set `PYTHONPATH=src`:
+Measure MCP tool surface:
 
-```powershell
-$env:PYTHONPATH = "src"
-python -m save_the_token.cli scan --root .
+```bash
+save-the-token tools --root . --budget 8000 --schema-digest
 ```
 
-Runtime commands are not all equivalent:
+Route and compress repo instructions for a specific task:
 
-- `scan` is read-only config discovery and linting. It does not start MCP servers.
-- `eval` and `benchmark` evaluate local instruction files. They do not start MCP servers.
-- `doctor`, `tools`, `report`, and `slim` may start configured stdio MCP server commands, call configured Streamable HTTP MCP URLs, and forward configured HTTP headers.
+```bash
+save-the-token report --root . --budget 8000 --task "fix tests" --route-instructions --compress-instructions --order-evidence
+```
 
-```powershell
-save-the-token doctor --root .
-save-the-token tools --root . --budget 8000
-save-the-token tools --root . --budget 8000 --task "review GitHub issues"
-save-the-token tools --root . --budget 8000 --task "review GitHub issues" --schema-digest
-save-the-token report --root . --budget 8000
-save-the-token report --root . --budget 8000 --context-budget 2000
-save-the-token report --root . --budget 8000 --task "fix tests" --route-instructions
-save-the-token report --root . --budget 8000 --task "fix tests" --route-instructions --include-nested-instructions
-save-the-token report --root . --budget 8000 --task "fix tests" --route-instructions --include-guidance
-save-the-token report --root . --budget 8000 --task "fix tests" --compress-instructions
-save-the-token report --root . --budget 8000 --task "fix tests" --order-evidence
-save-the-token report --root . --budget 8000 --task "fix tests" --active-retrieval 2
-save-the-token report --root . --budget 8000 --task "fix tests" --schema-digest
-save-the-token report --root . --budget 8000 --task "security review" --orchestration-advice
-save-the-token report --root . --budget 8000 --cache .save-the-token-cache.json
-save-the-token eval --root . --task "fix tests"
-save-the-token eval --root . --task "fix tests" --include-nested-instructions
-save-the-token eval --root . --task "fix tests" --include-guidance
+Generate client allowlist snippets:
+
+```bash
+save-the-token slim --root . --budget 8000 --task "review GitHub issues"
+```
+
+Run the strict local benchmark shape:
+
+```bash
 save-the-token benchmark --repos-dir .bench/repos --repo-commits .bench/repo-commits.json --fallback-instruction CLAUDE.md --include-nested-instructions --json-out .bench/report.json --markdown-out .bench/report.md
-save-the-token slim --root . --budget 8000
 ```
-
-## Distribution
-
-Save-The-Token has two release artifacts:
-
-- PyPI wheel / source distribution: ships the `save-the-token` CLI package.
-- Agent Skill bundle: ships from the repository at `skills/save-the-token-mcp-doctor` and is not imported as Python package code.
-
-The wheel is intentionally CLI-focused. The source distribution includes `docs/` and `skills/` via `MANIFEST.in` so release archives keep the Agent Skill and design documents available for review. Public release metadata points to the package page, repository, README documentation, and issue tracker.
-
-Agent Skill distribution is separate from the wheel. Use the repository bundle at `skills/save-the-token-mcp-doctor` with a locally installed `save-the-token` CLI, or use a source checkout with `PYTHONPATH=src`. The skill is an orchestration guide for the CLI; it does not package Python code into the wheel.
 
 ## Commands
 
-- `scan`: read-only config discovery and linting. Does not start MCP servers.
-- `doctor`: probes enabled stdio or Streamable HTTP MCP servers and checks `initialize` plus `tools/list`.
-- `tools`: reports tool count, estimated schema tokens, relevance scores, matched task terms, and client-specific allowlist snippets.
-- `report`: emits `sufficient`, `insufficient`, or `unanswerable` with claims, missing facts, feedback queries, and evidence ids.
-- `eval`: compares full, selected, compressed, and reordered instruction-evidence variants for token estimates, required-term recall, missing facts, and sufficiency regressions.
-- `benchmark`: runs `eval` across local repo directories and emits strict JSON/Markdown reports with repo commits, task queries, coverage, savings, regressions, and caveats.
-- `slim`: prints compact source-client-specific snippets, using Codex TOML for Codex config and JSON `enabledTools` snippets for VS Code/Cursor `mcp.json`.
+| command | purpose | starts MCP servers |
+|---|---|---|
+| `scan` | Discover and lint agent MCP config files. | No |
+| `eval` | Compare full, selected, compressed, and reordered instruction context. | No |
+| `benchmark` | Run strict eval across local repo checkouts. | No |
+| `doctor` | Probe configured MCP servers. | Yes |
+| `tools` | Measure tool count, schema tokens, relevance, and allowlist snippets. | Yes |
+| `report` | Emit sufficiency reports over config, runtime, tool, and instruction evidence. | Maybe |
+| `slim` | Print compact client-specific tool allowlist snippets. | Yes |
 
-`tools`, `report`, and `slim` accept `--task "..."`. When present, Save-The-Token routes the task query over tool names, descriptions, and schemas, then recommends matching tools before falling back to budget-only selection.
+`tools`, `report`, and `slim` accept `--task "..."` to prioritize relevant tools. `report` also supports `--context-budget`, `--route-instructions`, `--include-nested-instructions`, `--include-guidance`, `--compress-instructions`, `--order-evidence`, `--active-retrieval`, `--schema-digest`, `--orchestration-advice`, and `--cache`.
 
-`tools` and `report` accept `--schema-digest`. This emits compact tool schema digests with name, shortened description, required inputs, auth/destructive/network/filesystem risk markers, full schema references, token savings, and omitted-detail notes. Digest mode does not change task-aware tool selection.
+## Safety Model
 
-`scan` and `report` accept `--cache path.json`. The cache is read-only and uses `entries` with `source`, `kind`, `sha256`, `estimated_tokens`, and optional `summary` fields. Output includes `evidence_cache` hit/miss records; misses remain visible so stale cache entries do not hide changed evidence.
+Save-The-Token is local-first and explicit about side effects:
 
-`report` accepts `--context-budget N` and optional repeated `--fallback-instruction NAME`. This measures config and root-level instruction files by bytes and estimated tokens, emits selected/skipped evidence with reasons, and preserves Codex's orchestrator-loaded instruction baseline instead of changing it.
+- `scan`, `eval`, and `benchmark` do not start MCP servers or call MCP URLs.
+- `doctor`, `tools`, `report`, and `slim` may start configured stdio MCP commands or call configured Streamable HTTP MCP URLs.
+- Configured HTTP headers are forwarded only after filtering MCP-managed headers and unsafe newline values.
+- Secret-like config, env, header, and raw values are redacted from JSON output.
+- Claude-specific `enabledTools` output is deferred because public Claude MCP config docs do not document that field.
 
-`report` accepts `--route-instructions` with `--task "..."`. This splits root-level `AGENTS.override.md`, `AGENTS.md`, and fallback instruction files into Markdown sections, selects task-matching sections plus baseline safety/security sections, emits route lineage, and redacts secret-like lines in selected snippets. Add `--include-nested-instructions` to opt in to bounded nested `AGENTS.md` / `CLAUDE.md` discovery with scope lineage. Add `--include-guidance` to opt in to developer guidance files such as `CONTRIBUTING.md` and `.github/copilot-instructions.md`; these are reported with `source_kind="developer-guidance"` and are not loaded by default.
+## Agent Skill
 
-`report` accepts `--compress-instructions`. This routes instruction sections when needed, then keeps headings, warnings, commands, and task-matched lines while reporting original tokens, compressed tokens, compression ratio, and preserved citation ids.
+The repository includes a Codex skill bundle at:
 
-`report` accepts `--order-evidence`. This routes and compresses instruction evidence when needed, then orders compressed items by safety/task priority, citation availability, recency, and stable tie-breakers. Output includes an `evidence_order` lead digest, ordered items, and rationale.
-
-`report` accepts `--active-retrieval N`. This plans up to `N` targeted follow-up retrieval steps from the report's missing facts, records the target corpus, query, retrieved evidence ids already present in the draft, stop reason, and final sufficiency status. It does not turn an `insufficient` draft into a final recommendation.
-
-`report` accepts `--orchestration-advice`. This emits recommend-only guidance that distinguishes main-agent work, progressive skill loading, and explicit subagent requests. It never spawns subagents or overrides Codex's orchestrator.
-
-`eval` accepts `--task "..."`, optional repeated `--fallback-instruction NAME`, optional `--include-nested-instructions`, and optional `--include-guidance`. It does not start MCP servers; it evaluates local instruction evidence only and exits non-zero if a token-reduction variant drops required task terms.
-
-`benchmark` accepts `--repos-dir`, repeated `--task`, optional `--repo-commits`, repeated `--fallback-instruction`, optional `--include-nested-instructions`, optional `--include-guidance`, `--json-out`, and `--markdown-out`. Savings are counted only when `full_context` and the reduced variant are both `sufficient`; insufficient full context is reported as a coverage gap rather than a saving. Root-only and nested-instruction benchmark runs should be compared separately because their coverage assumptions differ.
-
-## Safety Boundaries
-
-- `scan` reads client config files and emits lint findings. It does not start MCP servers or call MCP URLs.
-- `eval` and `benchmark` operate on local instruction files and benchmark fixture directories. They do not start MCP servers.
-- `doctor`, `tools`, `report`, and `slim` collect runtime or tool evidence. Depending on discovered config, they may start configured stdio MCP commands or call configured Streamable HTTP MCP URLs.
-- URL-based MCP probes forward configured headers after filtering MCP-managed headers and unsafe newline values. Secret-like header, env, and raw config values are redacted from public JSON output.
-- Save-The-Token reads configured header values as written; it does not expand environment variable placeholders such as `${TOKEN}`.
-
-For protected HTTP MCP servers, put headers in the server config:
-
-```json
-{
-  "mcpServers": {
-    "remote": {
-      "url": "https://example.com/mcp",
-      "headers": {
-        "Authorization": "Bearer ${TOKEN}"
-      }
-    }
-  }
-}
+```text
+skills/save-the-token-mcp-doctor
 ```
 
-Save-The-Token forwards the configured header value as read from the client config; it does not expand environment variable placeholders.
-`scan` redacts secret-like `env`, `headers`, and `raw` values in JSON output.
-
-## Current Limitations
-
-- HTTP probing supports basic Streamable HTTP JSON and SSE responses for `initialize` and `tools/list`.
-- Custom headers with unsafe newline characters are linted and ignored by the HTTP probe.
-- Task-aware tool selection is lexical and deterministic; semantic embeddings or LLM reranking are intentionally out of scope for the MVP.
-- Claude config discovery is supported for Claude Code and Claude Desktop.
-- Instruction discovery covers root-level `AGENTS.override.md`, `AGENTS.md`, and configured fallback instruction filenames by default. Nested directory-level `AGENTS.md` / `CLAUDE.md` files are opt-in through `--include-nested-instructions` and use bounded traversal.
-- Instruction routing, compression, and evidence ordering are deterministic and lexical; semantic embeddings and model-based compression are out of scope for the MVP.
-- Developer guidance routing is opt-in because `CONTRIBUTING.md` and similar files can be broad, repo-specific, and outside the orchestrator instruction chain.
-- Active retrieval is a deterministic follow-up planner for missing facts; it does not automatically rerun external commands or call remote MCP URLs beyond the normal report probe path.
-- Schema digest risk markers are deterministic keyword signals, not a security classifier.
-- Evaluation recall is lexical over task terms; it is a regression guard for required evidence, not a semantic correctness benchmark.
-- Benchmark reports are local and deterministic. They do not clone repos, judge semantic answer quality, or count savings from insufficient reduced variants.
-- Orchestration advice is recommend-only and does not load skills or spawn subagents.
-- Evidence cache writing is manual for now; Save-The-Token reads cache entries and reports hit/miss status.
-- JSON snippets are merge suggestions, not automatic file edits.
-- Claude MCP config discovery is supported, but Claude-specific enabled-tool allowlist snippets are deferred because the official Claude MCP config docs do not document an `enabledTools` field.
-- Automatic patching is planned after the current snippet flow stabilizes.
+The skill is an orchestration wrapper around the CLI. It is intentionally distributed from the repo, while the Python package ships the `save-the-token` and compatibility `slim-token` commands.
 
 ## Development
 
-```powershell
+```bash
 python -m unittest discover -s tests -v
-python -m ruff check .\src .\tests
-mypy .\src\save_the_token
-python -m pip wheel . -w dist --no-deps
+python -m ruff check ./src ./tests
+python -m ruff format --check ./src ./tests
+mypy ./src/save_the_token
+python -m build
+python -m twine check dist/*
 ```
+
+## Current Limits
+
+Task routing and evaluation are deterministic and lexical. The benchmark is a regression guard for required evidence and sufficiency, not a semantic answer-quality judge. Automatic config patching is intentionally deferred until the snippet flow is stable.

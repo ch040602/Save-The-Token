@@ -1,7 +1,7 @@
 [project]
 name = "save-the-token"
 version = "0.1.0"
-description = "Local-first MCP tool budget doctor for agent coding clients."
+description = "Reduce Codex and Claude agent context waste by measuring MCP tools, instructions, and safe token-budget reductions."
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [{ name = "Save-The-Token contributors" }]
@@ -9,11 +9,15 @@ license = "MIT"
 license-files = ["LICENSE"]
 keywords = [
   "agentic-rag",
+  "agent-tools",
   "codex",
   "claude-code",
+  "context-engineering",
   "mcp",
   "model-context-protocol",
+  "prompt-compression",
   "token-budget",
+  "token-optimization",
 ]
 classifiers = [
   "Development Status :: 3 - Alpha",
