@@ -62,16 +62,29 @@ Save-The-Token makes those costs visible, then recommends smaller task-specific 
 - Generates Codex `enabled_tools` and VS Code / Cursor `enabledTools` snippets.
 - Runs strict local benchmarks that separate safe savings from coverage gaps.
 
-## Choose a Workflow
+## What the Benchmark Actually Proves
 
-| Goal | Command or document |
+The headline number is intentionally narrow: savings count only when the original context is sufficient and the reduced context remains sufficient.
+
+| Benchmark signal | Why it matters |
 |---|---|
-| See what an agent setup exposes | `save-the-token scan --root .` |
-| Estimate MCP schema cost | `save-the-token tools --root . --budget 8000 --schema-digest` |
-| Build a task-specific context report | `save-the-token report --root . --task "fix tests" --route-instructions --compress-instructions` |
-| Generate client allowlist snippets | `save-the-token slim --root . --task "review GitHub issues"` |
-| Reproduce the benchmark framing | [docs/benchmark.md](docs/benchmark.md) |
-| Understand the Agentic RAG direction | [docs/agentic-rag-design.md](docs/agentic-rag-design.md) |
+| `69.3%` weighted saving on successful cases | Shows the token reduction possible after evidence routing and compression, without counting insufficient contexts as wins. |
+| `100.0%` success on eligible cases | All five full-sufficient cases retained sufficiency after reduction. |
+| `25.0%` success across all cases | Makes the coverage gap visible instead of hiding it inside the savings number. |
+| `88.3%` best observed saving | The strongest case was `langchain-ai/langchain` security review, reduced from `7218` to `846` tokens. |
+| `4` selected-only wins and `1` compression/reorder win | Most current wins come from selecting relevant context; compression and ordering are useful but still guarded. |
+
+## Feature Map
+
+| Feature | Command |
+|---|---|
+| Config discovery and MCP linting | `save-the-token scan --root .` |
+| MCP tool schema measurement and digesting | `save-the-token tools --root . --budget 8000 --schema-digest` |
+| Task-routed instruction evidence | `save-the-token report --root . --task "fix tests" --route-instructions` |
+| Extractive compression and evidence ordering | `save-the-token report --root . --task "fix tests" --compress-instructions --order-evidence` |
+| Bounded missing-fact follow-up planning | `save-the-token report --root . --task "fix tests" --active-retrieval 2` |
+| Client allowlist snippets | `save-the-token slim --root . --task "review GitHub issues"` |
+| Strict local benchmark run | `save-the-token benchmark --repos-dir .bench/repos --repo-commits .bench/repo-commits.json ...` |
 
 ## Install
 
