@@ -8,35 +8,35 @@ Stop paying context tokens for MCP tools and repo instructions your agent does n
 
 Save-The-Token is a local-first CLI for Codex, Claude Code, Cursor, VS Code, and MCP-heavy agent setups. It scans agent config, probes MCP tool surfaces, routes repository instructions by task, and emits smaller context plans with explicit sufficiency checks.
 
-## Measured Result
+## Measured Context Savings With Sufficiency Checks
 
-On the current 10-repo / 20-case benchmark across major repositories, Save-The-Token cuts successful sufficient contexts by **69.3% weighted average** and **63.5% median**.
+On the current 10-repo / 20-case benchmark across major repositories, Save-The-Token cuts successful sufficient contexts by **69.3% weighted average** and **63.5% median**. Source: [docs/benchmark.md](docs/benchmark.md).
 
 <p align="center">
-  <img src="docs/assets/benchmark-savings.svg" alt="Benchmark chart showing 69.3% weighted average saving and per-repo successful token reductions" width="920">
+  <img src="docs/assets/benchmark-savings.svg" alt="Benchmark chart showing 69.3% weighted average saving and per-repo successful token reductions; source: docs/benchmark.md" width="920">
 </p>
 
 | Result | Value |
 |---|---:|
-| Benchmark repos | 10 |
-| Repo-task cases | 20 |
-| Eligible full-sufficient cases | 5 |
-| Successful safe reductions | 5 |
-| Success on eligible cases | 100.0% |
-| Success across all cases | 25.0% |
-| Weighted saving on successful cases | 69.3% |
-| Median saving on successful cases | 63.5% |
-| Best observed saving | 88.3% |
+| Benchmark repos | 10; source: [docs/benchmark.md](docs/benchmark.md) |
+| Repo-task cases | 20; source: [docs/benchmark.md](docs/benchmark.md) |
+| Eligible full-sufficient cases | 5; source: [docs/benchmark.md](docs/benchmark.md) |
+| Successful safe reductions | 5; source: [docs/benchmark.md](docs/benchmark.md) |
+| Success on eligible cases | 100.0%; source: [docs/benchmark.md](docs/benchmark.md) |
+| Success across all cases | 25.0%; source: [docs/benchmark.md](docs/benchmark.md) |
+| Weighted saving on successful cases | 69.3%; source: [docs/benchmark.md](docs/benchmark.md) |
+| Median saving on successful cases | 63.5%; source: [docs/benchmark.md](docs/benchmark.md) |
+| Best observed saving | 88.3%; source: [docs/benchmark.md](docs/benchmark.md) |
 
 Successful reductions:
 
 | repo | task | tokens | saving |
 |---|---|---:|---:|
-| `kubernetes/kubernetes` | `unit tests` | 345 -> 126 | 63.5% |
-| `langchain-ai/langchain` | `unit tests` | 7218 -> 3150 | 56.4% |
-| `langchain-ai/langchain` | `security review` | 7218 -> 846 | 88.3% |
-| `vercel/next.js` | `unit tests` | 5606 -> 2823 | 49.6% |
-| `vercel/next.js` | `security review` | 5606 -> 1034 | 81.6% |
+| `kubernetes/kubernetes` | `unit tests` | 345 -> 126 | 63.5%; source: [docs/benchmark.md](docs/benchmark.md) |
+| `langchain-ai/langchain` | `unit tests` | 7218 -> 3150 | 56.4%; source: [docs/benchmark.md](docs/benchmark.md) |
+| `langchain-ai/langchain` | `security review` | 7218 -> 846 | 88.3%; source: [docs/benchmark.md](docs/benchmark.md) |
+| `vercel/next.js` | `unit tests` | 5606 -> 2823 | 49.6%; source: [docs/benchmark.md](docs/benchmark.md) |
+| `vercel/next.js` | `security review` | 5606 -> 1034 | 81.6%; source: [docs/benchmark.md](docs/benchmark.md) |
 
 The benchmark is strict: savings count only when the full context and reduced context both remain sufficient. Cases where the full context is already insufficient are reported as coverage gaps, not wins. See [docs/benchmark.md](docs/benchmark.md).
 
@@ -57,21 +57,21 @@ Save-The-Token makes those costs visible, then recommends smaller task-specific 
 - Probes stdio and Streamable HTTP MCP servers for `initialize` and `tools/list`.
 - Estimates tool schema tokens and emits compact schema digests.
 - Routes `AGENTS.md` / `CLAUDE.md` sections by task query.
-- Compresses and orders instruction evidence to reduce irrelevant context.
+- Compresses and orders instruction evidence with explicit token counts, citation ids, preserved terms, and missing-fact checks.
 - Produces grounded sufficiency reports with claims, missing facts, and evidence ids.
 - Generates Codex `enabled_tools` and VS Code / Cursor `enabledTools` snippets.
 - Runs strict local benchmarks that separate safe savings from coverage gaps.
 
-## What the Benchmark Actually Proves
+## Benchmark Scope and Caveats
 
 The headline number is intentionally narrow: savings count only when the original context is sufficient and the reduced context remains sufficient.
 
 | Benchmark signal | Why it matters |
 |---|---|
-| `69.3%` weighted saving on successful cases | Shows the token reduction possible after evidence routing and compression, without counting insufficient contexts as wins. |
-| `100.0%` success on eligible cases | All five full-sufficient cases retained sufficiency after reduction. |
-| `25.0%` success across all cases | Makes the coverage gap visible instead of hiding it inside the savings number. |
-| `88.3%` best observed saving | The strongest case was `langchain-ai/langchain` security review, reduced from `7218` to `846` tokens. |
+| `69.3%` weighted saving on successful cases | Evidence-routing and compression result, without counting insufficient contexts as wins. Source: [docs/benchmark.md](docs/benchmark.md). |
+| `100.0%` success on eligible cases | All five full-sufficient cases retained sufficiency after reduction. Source: [docs/benchmark.md](docs/benchmark.md). |
+| `25.0%` success across all cases | Makes the coverage gap visible instead of hiding it inside the savings number. Source: [docs/benchmark.md](docs/benchmark.md). |
+| `88.3%` best observed saving | The strongest case was `langchain-ai/langchain` security review, reduced from `7218` to `846` tokens. Source: [docs/benchmark.md](docs/benchmark.md). |
 | `4` selected-only wins and `1` compression/reorder win | Most current wins come from selecting relevant context; compression and ordering are useful but still guarded. |
 
 ## Feature Map
@@ -85,6 +85,21 @@ The headline number is intentionally narrow: savings count only when the origina
 | Bounded missing-fact follow-up planning | `save-the-token report --root . --task "fix tests" --active-retrieval 2` |
 | Client allowlist snippets | `save-the-token slim --root . --task "review GitHub issues"` |
 | Strict local benchmark run | `save-the-token benchmark --repos-dir .bench/repos --repo-commits .bench/repo-commits.json ...` |
+
+## Context-Slimming Pipeline
+
+```text
+scan config -> measure tools/instructions -> route by task -> digest schemas -> compress/order evidence -> judge sufficiency -> emit report or allowlist
+```
+
+| Pipeline gate | What it protects |
+|---|---|
+| Config scan | Finds client config and redacts secret-like values before reporting. |
+| Tool measurement | Makes MCP schema size visible before allowing selection. |
+| Task routing | Keeps selected instructions tied to the requested task and source heading. |
+| Compression and ordering | Shortens repeated instruction text while preserving citation ids and required terms. |
+| Sufficiency judgment | Blocks savings claims when required context is missing. |
+| Benchmark report | Counts only cases where full and reduced contexts both remain sufficient. |
 
 ## Install
 

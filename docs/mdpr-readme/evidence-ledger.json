@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "mdpr-source-slide-evidence-ledger-v1",
+  "generatedBy": "mdpr-skill",
+  "entries": [
+    {
+      "slideRef": "Measured Context Savings With Sufficiency Checks",
+      "sourcePath": "C:\\Users\\hcslab_523\\Documents\\Save-The-Token\\README.md",
+      "claimExcerpt": "On the current 10-repo / 20-case benchmark across major repositories, Save-The-Token cuts successful sufficient contexts by **69.3% weighted average** and **63.5% median**. Source: [docs/benchmark.md](docs/benchmark.md).",
+      "sources": [],
+      "mdprEvidenceRefs": []
+    },
+    {
+      "slideRef": "Benchmark Scope and Caveats",
+      "sourcePath": "C:\\Users\\hcslab_523\\Documents\\Save-The-Token\\README.md",
+      "claimExcerpt": "| `69.3%` weighted saving on successful cases | Evidence-routing and compression result, without counting insufficient contexts as wins. Source: [docs/benchmark.md](docs/benchmark.md). |",
+      "sources": [],
+      "mdprEvidenceRefs": []
+    }
+  ]
+}
