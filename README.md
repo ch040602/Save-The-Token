@@ -12,6 +12,10 @@ Save-The-Token is a local-first CLI for Codex, Claude Code, Cursor, VS Code, and
 
 On the current 10-repo / 20-case benchmark across major repositories, Save-The-Token cuts successful sufficient contexts by **69.3% weighted average** and **63.5% median**.
 
+<p align="center">
+  <img src="docs/assets/benchmark-savings.svg" alt="Benchmark chart showing 69.3% weighted average saving and per-repo successful token reductions" width="920">
+</p>
+
 | Result | Value |
 |---|---:|
 | Benchmark repos | 10 |

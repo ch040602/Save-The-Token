@@ -38,6 +38,8 @@ Repos:
 
 ## Summary
 
+![Benchmark savings chart](assets/benchmark-savings.svg)
+
 | metric | value |
 |---|---:|
 | Total repo-task cases | 20 |

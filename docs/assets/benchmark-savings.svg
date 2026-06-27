@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="440" viewBox="0 0 920 440" role="img" aria-labelledby="title desc">
+  <title id="title">Save-The-Token benchmark savings</title>
+  <desc id="desc">Horizontal bar chart showing token savings on five successful sufficient benchmark cases, with 69.3 percent weighted average and 63.5 percent median savings.</desc>
+  <rect width="920" height="440" rx="16" fill="#ffffff"/>
+  <rect x="1" y="1" width="918" height="438" rx="15" fill="none" stroke="#d7dde8"/>
+
+  <text x="40" y="48" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="700" fill="#111827">Token savings on successful sufficient cases</text>
+  <text x="40" y="76" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="14" fill="#4b5563">10 major repos, 20 repo-task cases, savings counted only when reduced context stays sufficient.</text>
+
+  <rect x="40" y="102" width="185" height="70" rx="10" fill="#eef6ff" stroke="#bfdcff"/>
+  <text x="58" y="130" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#1f4f82">Weighted saving</text>
+  <text x="58" y="158" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="28" font-weight="800" fill="#0f5ea8">69.3%</text>
+
+  <rect x="246" y="102" width="185" height="70" rx="10" fill="#f4f7fb" stroke="#d7dde8"/>
+  <text x="264" y="130" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#374151">Median saving</text>
+  <text x="264" y="158" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="28" font-weight="800" fill="#111827">63.5%</text>
+
+  <rect x="452" y="102" width="185" height="70" rx="10" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="470" y="130" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#166534">Eligible success</text>
+  <text x="470" y="158" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="28" font-weight="800" fill="#15803d">100%</text>
+
+  <rect x="658" y="102" width="222" height="70" rx="10" fill="#fff7ed" stroke="#fed7aa"/>
+  <text x="676" y="130" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#9a3412">Coverage note</text>
+  <text x="676" y="158" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="800" fill="#c2410c">5 / 20 cases</text>
+
+  <line x1="250" y1="220" x2="810" y2="220" stroke="#e5e7eb"/>
+  <line x1="250" y1="220" x2="250" y2="386" stroke="#e5e7eb"/>
+  <line x1="530" y1="220" x2="530" y2="386" stroke="#eef2f7"/>
+  <line x1="810" y1="220" x2="810" y2="386" stroke="#eef2f7"/>
+  <text x="244" y="410" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12" text-anchor="end" fill="#6b7280">0%</text>
+  <text x="530" y="410" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12" text-anchor="middle" fill="#6b7280">50%</text>
+  <text x="810" y="410" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12" text-anchor="middle" fill="#6b7280">100%</text>
+
+  <text x="40" y="245" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#111827">langchain security</text>
+  <rect x="250" y="230" width="494.5" height="22" rx="5" fill="#2563eb"/>
+  <text x="758" y="246" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#111827">88.3%</text>
+  <text x="812" y="246" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12" fill="#6b7280">7218 -> 846</text>
+
+  <text x="40" y="281" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#111827">next.js security</text>
+  <rect x="250" y="266" width="457.0" height="22" rx="5" fill="#16a34a"/>
+  <text x="721" y="282" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#111827">81.6%</text>
+  <text x="812" y="282" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12" fill="#6b7280">5606 -> 1034</text>
+
+  <text x="40" y="317" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#111827">kubernetes unit tests</text>
+  <rect x="250" y="302" width="355.6" height="22" rx="5" fill="#7c3aed"/>
+  <text x="620" y="318" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#111827">63.5%</text>
+  <text x="812" y="318" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12" fill="#6b7280">345 -> 126</text>
+
+  <text x="40" y="353" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#111827">langchain unit tests</text>
+  <rect x="250" y="338" width="315.8" height="22" rx="5" fill="#0891b2"/>
+  <text x="580" y="354" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#111827">56.4%</text>
+  <text x="812" y="354" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12" fill="#6b7280">7218 -> 3150</text>
+
+  <text x="40" y="389" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#111827">next.js unit tests</text>
+  <rect x="250" y="374" width="277.8" height="22" rx="5" fill="#ea580c"/>
+  <text x="542" y="390" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#111827">49.6%</text>
+  <text x="812" y="390" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="12" fill="#6b7280">5606 -> 2823</text>
+</svg>
