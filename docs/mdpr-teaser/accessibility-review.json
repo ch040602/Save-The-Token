@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "mdpr-accessibility-content-review-v1",
+  "generatedBy": "mdpr-skill",
+  "suggestions": [
+    {
+      "type": "PLAIN_LANGUAGE_CHECK",
+      "kind": "plain-language",
+      "generatedBy": "mdpr-skill",
+      "evidence": {
+        "sourcePath": "C:\\Users\\hcslab_523\\Documents\\Save-The-Token\\docs\\mdpr-teaser\\teaser.md",
+        "markdownExcerpt": "The benchmark reports 69.3% weighted saving and 63.5% median saving only for cases where the full context and reduced context both remain sufficient. Source: docs/benchmark.md."
+      },
+      "suggestion": {
+        "text": "Rewrite this sentence into shorter, audience-readable language before converting it into slide content."
+      },
+      "boundary": {
+        "mdprVisualAccessibilityAuthority": true
+      }
+    },
+    {
+      "type": "ACRONYM_EXPANSION",
+      "kind": "acronym-expansion",
+      "generatedBy": "mdpr-skill",
+      "evidence": {
+        "sourcePath": "C:\\Users\\hcslab_523\\Documents\\Save-The-Token\\docs\\mdpr-teaser\\teaser.md",
+        "acronym": "README"
+      },
+      "suggestion": {
+        "text": "Expand README on first use or add a short speaker note for audiences that may not know it."
+      },
+      "boundary": {
+        "mdprVisualAccessibilityAuthority": true
+      }
+    }
+  ]
+}

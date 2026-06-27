@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "mdpr-source-slide-evidence-ledger-v1",
+  "generatedBy": "mdpr-skill",
+  "entries": [
+    {
+      "slideRef": "Context slimming is benchmarked with sufficiency gates",
+      "sourcePath": "C:\\Users\\hcslab_523\\Documents\\Save-The-Token\\docs\\mdpr-teaser\\teaser.md",
+      "claimExcerpt": "The benchmark reports 69.3% weighted saving and 63.5% median saving only for cases where the full context and reduced context both remain sufficient. Source: docs/benchmark.md.",
+      "sources": [],
+      "mdprEvidenceRefs": []
+    }
+  ]
+}

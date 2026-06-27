@@ -4,6 +4,10 @@
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
+<p align="center">
+  <img src="docs/assets/readme-teaser.svg" alt="Save-The-Token teaser: 69.3 percent weighted saving with sufficiency-checked context slimming pipeline; source: docs/benchmark.md" width="900">
+</p>
+
 Stop paying context tokens for MCP tools and repo instructions your agent does not need.
 
 Save-The-Token is a local-first CLI for Codex, Claude Code, Cursor, VS Code, and MCP-heavy agent setups. It scans agent config, probes MCP tool surfaces, routes repository instructions by task, and emits smaller context plans with explicit sufficiency checks.
