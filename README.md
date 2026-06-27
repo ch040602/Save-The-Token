@@ -62,6 +62,17 @@ Save-The-Token makes those costs visible, then recommends smaller task-specific 
 - Generates Codex `enabled_tools` and VS Code / Cursor `enabledTools` snippets.
 - Runs strict local benchmarks that separate safe savings from coverage gaps.
 
+## Choose a Workflow
+
+| Goal | Command or document |
+|---|---|
+| See what an agent setup exposes | `save-the-token scan --root .` |
+| Estimate MCP schema cost | `save-the-token tools --root . --budget 8000 --schema-digest` |
+| Build a task-specific context report | `save-the-token report --root . --task "fix tests" --route-instructions --compress-instructions` |
+| Generate client allowlist snippets | `save-the-token slim --root . --task "review GitHub issues"` |
+| Reproduce the benchmark framing | [docs/benchmark.md](docs/benchmark.md) |
+| Understand the Agentic RAG direction | [docs/agentic-rag-design.md](docs/agentic-rag-design.md) |
+
 ## Install
 
 From GitHub:
@@ -149,6 +160,14 @@ skills/save-the-token-mcp-doctor
 ```
 
 The skill is an orchestration wrapper around the CLI. It is intentionally distributed from the repo, while the Python package ships the `save-the-token` and compatibility `slim-token` commands.
+
+## Documentation
+
+- [Benchmark methodology and results](docs/benchmark.md)
+- [Release readiness notes](docs/release-readiness.md)
+- [Agentic RAG design notes](docs/agentic-rag-design.md)
+- [Agentic RAG token roadmap](docs/agentic-rag-token-roadmap.md)
+- [Codex skill entry point](skills/save-the-token-mcp-doctor/SKILL.md)
 
 ## Development
 
