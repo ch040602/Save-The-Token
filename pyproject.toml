@@ -1,0 +1,54 @@
+[project]
+name = "save-the-token"
+version = "0.1.0"
+description = "Local-first MCP tool budget doctor for agent coding clients."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Save-The-Token contributors" }]
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = [
+  "agentic-rag",
+  "codex",
+  "claude-code",
+  "mcp",
+  "model-context-protocol",
+  "token-budget",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development",
+  "Topic :: Utilities",
+]
+
+[project.urls]
+Package = "https://pypi.org/project/save-the-token/"
+Repository = "https://github.com/ch040602/Save-The-Token"
+Documentation = "https://github.com/ch040602/Save-The-Token#readme"
+Issues = "https://github.com/ch040602/Save-The-Token/issues"
+
+[project.scripts]
+save-the-token = "save_the_token.cli:main"
+slim-token = "save_the_token.cli:main"
+
+[project.optional-dependencies]
+dev = [
+  "build>=1.2",
+  "mypy>=1.10",
+  "ruff>=0.5",
+  "twine>=5.1",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"

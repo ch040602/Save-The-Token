@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Build and packaging
+build/
+dist/
+*.egg-info/
+*.whl
+.release-audit-dist/
+.release-smoke-venv/
+.release-build-venv/
+.ci-smoke-venv/
+.ci-install-smoke-venv/
+benchmark-smoke.json
+benchmark-smoke.md
+.bench/
+.codex/
+
+# Local environments
+.venv/
+venv/
+env/
+
+# Local Save-The-Token artifacts
+.save-the-token-cache.json
+.slim-token-cache.json
+
+# Editor and OS noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

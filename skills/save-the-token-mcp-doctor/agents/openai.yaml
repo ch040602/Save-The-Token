@@ -1,0 +1,4 @@
+name: save-the-token-mcp-doctor
+version: 0.1.0
+description: Diagnose and slim MCP tool surface for Codex and other coding agents.
+entrypoint: SKILL.md

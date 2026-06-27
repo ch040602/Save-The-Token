@@ -1,0 +1,10 @@
+[
+  {
+    "repo": "owner/good",
+    "commit": "fixture-good"
+  },
+  {
+    "repo": "owner/missing",
+    "commit": "fixture-missing"
+  }
+]
